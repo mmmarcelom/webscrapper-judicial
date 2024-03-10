@@ -7,8 +7,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.chrome.options import Options
 
-#from selenium.webdriver.chrome.options import Options
 #from selenium.webdriver.support.ui import Select
 
 from selenium import webdriver
@@ -94,13 +94,20 @@ s = Service(chromedriver_path)
 
 default_implicitly_wait = 10
 
-driver = TRF5_Driver(service=s)
+options = Options()
+options.add_argument('--headless=new')
+
+driver = TRF5_Driver(service=s, options=options)
 driver.set_implicitly_wait(default_implicitly_wait)
+
+print("Iniciando no modo headless...")
 
 driver.login(
     username=os.environ.get("TRF1_login"), 
     password=os.environ.get("TRF1_password")
 )
+
+print("Login realizado...")
 
 time.sleep(10)
 
@@ -138,7 +145,8 @@ def get_list(todo_file, done_file):
 webapp_url = "https://script.google.com/macros/s/AKfycbw2OgtEWL7tFq4SckC2OjYtSVjKaIyVzv7z2tgslVuq3GcoVx_wDb6WuJLGLO2aMg47lA/exec"
 
 todo_list = get_list("unafisco_todo.csv", "done.csv")
-print(len(todo_list))
+
+print("Processos restantes: ", len(todo_list))
 
 for nome in todo_list:
     consulta = { "nome": nome }
@@ -151,6 +159,7 @@ for nome in todo_list:
             driver.close()
         driver.switch_to.window(driver.window_handles[0])
 
+        print("Iniciando consulta: ", consulta)
         processos = driver.consultar_processo(consulta=consulta, wait_seconds=120)
 
         # Abrir o primeiro processo
@@ -192,6 +201,7 @@ for nome in todo_list:
         }
         requests.post(url=webapp_url, json=data)
         save([[consulta["nome"]]], 'done.csv', 'a')
+        print("Salvo")
         
     except Exception as e:
         print(e)
