@@ -87,7 +87,8 @@ import sys
 from dotenv import load_dotenv
 load_dotenv()
 
-project_path = os.path.dirname(os.path.abspath(sys.argv[0])).replace('.venv\\Lib\\site-packages', '')
+#project_path = os.path.dirname(os.path.abspath(sys.argv[0])).replace('.venv\\Lib\\site-packages', '')
+project_path = "C:\Projetos\webscrappers".replace(r"\\" , "/")
 chromedriver_path = f'{project_path}/chromedriver.exe'
 
 s = Service(chromedriver_path)
@@ -144,7 +145,7 @@ def get_list(todo_file, done_file):
 
 webapp_url = "https://script.google.com/macros/s/AKfycbw2OgtEWL7tFq4SckC2OjYtSVjKaIyVzv7z2tgslVuq3GcoVx_wDb6WuJLGLO2aMg47lA/exec"
 
-todo_list = get_list("unafisco_todo.csv", "done.csv")
+todo_list = get_list("todo.csv", "done.csv")
 
 print("Processos restantes: ", len(todo_list))
 
